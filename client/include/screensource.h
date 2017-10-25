@@ -9,8 +9,9 @@ class ScreenSource : public Source
 public: 
     void run(Controller *controller);
 
-    void toggle();
-    bool active() const;
+    void enable() { _active = true; }
+    void disable() { _active = false; }
+    bool active() const { return _active; }
 
 private:
     Controller *_controller;

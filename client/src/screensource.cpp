@@ -22,16 +22,6 @@ void ScreenSource::run(Controller *controller)
     _framgrabber->setFrameChangeInterval(std::chrono::milliseconds(50));
 }
 
-void ScreenSource::toggle()
-{
-    _active = !_active;
-}
-
-bool ScreenSource::active() const
-{
-    return _active;
-}
-
 #define LEFT_LED 10
 #define TOP_LED 20
 #define RIGHT_LED 10 
@@ -39,7 +29,7 @@ bool ScreenSource::active() const
 
 void ScreenSource::processFrame(std::shared_ptr<Image> image)
 {   
-    Color colors[65];
+    Color colors[61];
     int i = 0;
 
     int left =   image->height() / LEFT_LED;

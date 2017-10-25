@@ -54,7 +54,7 @@ void LolSource::run(Controller *controller)
             // just died
             if(counter && prev == 0)
             {
-                screen.toggle();
+                screen.disable();
             }
 
 			if (counter)
@@ -70,7 +70,7 @@ void LolSource::run(Controller *controller)
 			// revived
 			else
 			{
-                screen.toggle();
+                screen.enable();
 			}
 		}
 
