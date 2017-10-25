@@ -7,11 +7,12 @@
 void ScreenSource::run(Controller *controller)
 {    
     _controller = controller;
+    _active = true;
     _framgrabber =
     SL::Screen_Capture::CreateCaptureConfiguration([]() {
 		return SL::Screen_Capture::GetMonitors();
     })->onNewFrame([&](const SL::Screen_Capture::Image &img, const SL::Screen_Capture::Monitor &monitor) {
-		if (monitor.Id == 0)
+		if (_active && monitor.Id == 0)
 		{
 			auto image = Image::fromBGRA(img.Data, img.Bounds.right, img.Bounds.bottom);
 			this->processFrame(image);
@@ -19,6 +20,16 @@ void ScreenSource::run(Controller *controller)
     })->start_capturing();
 
     _framgrabber->setFrameChangeInterval(std::chrono::milliseconds(50));
+}
+
+void ScreenSource::toggle()
+{
+    _active = !_active;
+}
+
+bool ScreenSource::active() const
+{
+    return _active;
 }
 
 #define LEFT_LED 10
