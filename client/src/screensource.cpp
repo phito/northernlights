@@ -29,7 +29,7 @@ void ScreenSource::run(Controller *controller)
 
 void ScreenSource::processFrame(std::shared_ptr<Image> image)
 {   
-    Color colors[61];
+    Color colors[63];
     int i = 0;
 
     int left =   image->height() / LEFT_LED;
