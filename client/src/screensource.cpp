@@ -1,6 +1,7 @@
 #include "screensource.h"
 
 #include <random>
+#include <iostream>
 #include "image.h"
 
 void ScreenSource::run(Controller *controller)
@@ -8,10 +9,13 @@ void ScreenSource::run(Controller *controller)
     _controller = controller;
     _framgrabber =
     SL::Screen_Capture::CreateCaptureConfiguration([]() {
-        return SL::Screen_Capture::GetMonitors();
+		return SL::Screen_Capture::GetMonitors();
     })->onNewFrame([&](const SL::Screen_Capture::Image &img, const SL::Screen_Capture::Monitor &monitor) {
-        auto image = Image::fromBGRA(img.Data, img.Bounds.right, img.Bounds.bottom);
-        this->processFrame(image);
+		if (monitor.Id == 0)
+		{
+			auto image = Image::fromBGRA(img.Data, img.Bounds.right, img.Bounds.bottom);
+			this->processFrame(image);
+		}
     })->start_capturing();
 
     _framgrabber->setFrameChangeInterval(std::chrono::milliseconds(50));
