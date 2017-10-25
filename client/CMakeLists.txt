@@ -13,6 +13,7 @@ endif()
 
 if(WIN32)
     set(SCREEN_CAPTURE_PLATFORM_SRC     
+        src/win32/udpcontroller.cpp
     )
     set(SCREEN_CAPTURE_PLATFORM_INC     
        include/win32 

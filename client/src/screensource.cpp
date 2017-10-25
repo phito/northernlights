@@ -1,7 +1,5 @@
 #include "screensource.h"
 
-#if defined(__unix__)
-
 #include <random>
 #include "image.h"
 
@@ -56,6 +54,3 @@ void ScreenSource::processFrame(std::shared_ptr<Image> image)
     
     _controller->set(colors, 61);
 }
-
-
-#endif
