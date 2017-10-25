@@ -2,10 +2,14 @@
 
 #include <iostream>
 #include <windows.h>
+#include "screensource.h"
 
 void LolSource::run(Controller *controller)
 {    
     _controller = controller;
+
+    ScreenSource screen;
+    screen.run(_controller);
 
     DWORD access = PROCESS_VM_READ |
                    PROCESS_QUERY_INFORMATION |
@@ -19,6 +23,7 @@ void LolSource::run(Controller *controller)
 	0x50
 	};*/
 
+    // death timer
 	int offsets[] = {
 		0x02A1375C,
 		0x6C,
@@ -41,12 +46,17 @@ void LolSource::run(Controller *controller)
 	while (true)
 	{
 		prev = counter;
-		ReadProcessMemory(proc, addr, &counter, sizeof(counter), &read);
+        ReadProcessMemory(proc, addr, &counter, sizeof(counter), &read);
 
-
+        // counter tick        
 		if (counter != prev)
 		{
-			// counter tick
+            // just died
+            if(counter && prev == 0)
+            {
+                screen.toggle();
+            }
+
 			if (counter)
 			{
 				char red = 255;
@@ -60,21 +70,7 @@ void LolSource::run(Controller *controller)
 			// revived
 			else
 			{
-				char red = 45;
-				for (int i = 0; i < 9; i++)
-				{
-					_controller->set(Color(red, 0, 0));
-					red -= 5;
-					Sleep(16);
-				}
-
-				char green = 0;
-				for (int i = 0; i < 255; i++)
-				{
-					_controller->set(Color(0, green, 0));
-					green++;
-					Sleep(16);
-				}
+                screen.toggle();
 			}
 		}
 
