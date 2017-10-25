@@ -9,3 +9,4 @@
 - Focus window for screensource
 - More LoL triggers
 - More sources
+- Documentation (:
