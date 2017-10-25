@@ -22,13 +22,11 @@ DWORD FindProcessId(const char *processname)
 	if (!Process32First(hProcessSnap, &pe32))
 	{
 		CloseHandle(hProcessSnap);          // clean the snapshot object
-		printf("!!! Failed to gather information on system processes! \n");
 		return(NULL);
 	}
 
 	do
 	{
-		printf("Checking process %ls\n", pe32.szExeFile);
 		if (0 == strcmp(processname, pe32.szExeFile))
 		{
 			result = pe32.th32ProcessID;
@@ -51,7 +49,7 @@ void LolSource::run(Controller *controller)
 	DWORD access = PROCESS_VM_READ |
 		PROCESS_QUERY_INFORMATION |
 		PROCESS_VM_OPERATION;
-	HANDLE proc = OpenProcess(access, FALSE, FindProcessId("League Of Legends.exe"));
+	HANDLE proc = OpenProcess(access, FALSE, FindProcessId("League of Legends.exe"));
 
 	/* alive
 	int offsets[] = {
