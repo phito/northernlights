@@ -60,11 +60,9 @@ void LolSource::run(Controller *controller)
 
 	// death timer
 	int offsets[] = {
-		0x02A1375C,
-		0x6C,
-		0x4,
-		0x0,
-		0x18
+		0x0252375C,
+		0x24,
+		0x78
 	};
 	void *addr = (void*)offsets[0];
 	int count = sizeof(offsets) / sizeof(*offsets);
