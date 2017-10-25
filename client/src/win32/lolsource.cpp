@@ -2,19 +2,56 @@
 
 #include <iostream>
 #include <windows.h>
+#include <tlhelp32.h>
 #include "screensource.h"
 
+DWORD FindProcessId(const char *processname)
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+	DWORD result = NULL;
+
+	// Take a snapshot of all processes in the system.
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (INVALID_HANDLE_VALUE == hProcessSnap) return(FALSE);
+
+	pe32.dwSize = sizeof(PROCESSENTRY32); // <----- IMPORTANT
+
+	// Retrieve information about the first process,
+	// and exit if unsuccessful
+	if (!Process32First(hProcessSnap, &pe32))
+	{
+		CloseHandle(hProcessSnap);          // clean the snapshot object
+		printf("!!! Failed to gather information on system processes! \n");
+		return(NULL);
+	}
+
+	do
+	{
+		printf("Checking process %ls\n", pe32.szExeFile);
+		if (0 == strcmp(processname, pe32.szExeFile))
+		{
+			result = pe32.th32ProcessID;
+			break;
+		}
+	} while (Process32Next(hProcessSnap, &pe32));
+
+	CloseHandle(hProcessSnap);
+
+	return result;
+}
+
 void LolSource::run(Controller *controller)
-{    
-    _controller = controller;
+{
+	_controller = controller;
 
-    ScreenSource screen;
-    screen.run(_controller);
+	ScreenSource screen;
+	screen.run(_controller);
 
-    DWORD access = PROCESS_VM_READ |
-                   PROCESS_QUERY_INFORMATION |
-                   PROCESS_VM_OPERATION;
-    HANDLE proc = OpenProcess(access, FALSE, 5352);
+	DWORD access = PROCESS_VM_READ |
+		PROCESS_QUERY_INFORMATION |
+		PROCESS_VM_OPERATION;
+	HANDLE proc = OpenProcess(access, FALSE, FindProcessId("League Of Legends.exe"));
 
 	/* alive
 	int offsets[] = {
@@ -23,7 +60,7 @@ void LolSource::run(Controller *controller)
 	0x50
 	};*/
 
-    // death timer
+	// death timer
 	int offsets[] = {
 		0x02A1375C,
 		0x6C,
@@ -32,11 +69,11 @@ void LolSource::run(Controller *controller)
 		0x18
 	};
 	void *addr = (void*)offsets[0];
-	int count = sizeof(offsets)/sizeof(*offsets);
+	int count = sizeof(offsets) / sizeof(*offsets);
 	int value;
 	SIZE_T read;
 
-	for (int i = 1; i < count; i++) 
+	for (int i = 1; i < count; i++)
 	{
 		ReadProcessMemory(proc, addr, &value, sizeof(value), &read);
 		addr = (void*)(value + offsets[i]);
@@ -46,16 +83,16 @@ void LolSource::run(Controller *controller)
 	while (true)
 	{
 		prev = counter;
-        ReadProcessMemory(proc, addr, &counter, sizeof(counter), &read);
+		ReadProcessMemory(proc, addr, &counter, sizeof(counter), &read);
 
-        // counter tick        
+		// counter tick        
 		if (counter != prev)
 		{
-            // just died
-            if(counter && prev == 0)
-            {
-                screen.disable();
-            }
+			// just died
+			if (counter && prev == 0)
+			{
+				screen.disable();
+			}
 
 			if (counter)
 			{
@@ -70,7 +107,7 @@ void LolSource::run(Controller *controller)
 			// revived
 			else
 			{
-                screen.enable();
+				screen.enable();
 			}
 		}
 
