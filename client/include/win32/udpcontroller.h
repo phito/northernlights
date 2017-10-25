@@ -27,5 +27,7 @@ private:
     int _port; 
 
     // udp related
-    void send(const uint8_t *data, size_t length);
+    SOCKET _sockfd;
+    struct sockaddr_in _serveraddr;
+    void send(const char *data, size_t length);
 };

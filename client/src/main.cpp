@@ -1,7 +1,7 @@
 #include "udpcontroller.h"
 #include "screensource.h"
 
-#include <unistd.h>
+#include <cstdio>
 
 int main()
 {
@@ -12,7 +12,7 @@ int main()
     controller.init();
 
     source.run(&controller);
-    getchar();
+    std::getchar();
     controller.reset();
 
     return 0;
