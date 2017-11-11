@@ -9,7 +9,7 @@
 
 #define SERVER_PORT 1612
 
-#define LED_PIN 15
+#define LED_PIN 16
 #define LED_COUNT 61
 
 IPAddress ip(192, 168, 0, 98);
@@ -24,7 +24,8 @@ void wifi_setup();
 void setup()
 {
     controller.init();
-
+    
+    Serial.begin(9600);
     wifi_setup();
     server.begin(SERVER_PORT);
 }
